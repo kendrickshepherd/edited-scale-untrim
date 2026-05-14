@@ -33,8 +33,7 @@ void quadgeneration::QMG(std::string input_tri, std::string output_quad, std::st
         // field.Load((std::string(DATA_PATH) + "/fertility.obj").c_str());
     }
 
-    field.flag_preserve_sharp = 0;
-	/*field.flag_preserve_sharp = 0;*/
+    field.flag_preserve_sharp = preserve_sharp;
     field.flag_preserve_boundary = preserve_boundary;
     field.flag_minimum_cost_flow = 1;
     field.flag_adaptive_scale = 0;

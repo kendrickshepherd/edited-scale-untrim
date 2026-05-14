@@ -14,11 +14,10 @@ find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
 
 if(APPLE)
-    # manually include OCC, you can also do it in VS
-    set(OpenCASCADE_PATH "/opt/homebrew")
-    set(OpenCASCADE_INCLUDE_DIR "${OpenCASCADE_PATH}/include/opencascade")
-    file(GLOB OpenCASCADE_LIBRARIES 
-    "${OpenCASCADE_PATH}/lib/*.dylib")
+    # Detect homebrew opencascade prefix (Apple Silicon: /opt/homebrew, Intel: /usr/local)
+    execute_process(COMMAND brew --prefix opencascade OUTPUT_VARIABLE OCC_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(OpenCASCADE_INCLUDE_DIR "${OCC_PREFIX}/include/opencascade")
+    file(GLOB OpenCASCADE_LIBRARIES "${OCC_PREFIX}/lib/libTK*.dylib")
     include_directories(${OpenCASCADE_INCLUDE_DIR})
 elseif(UNIX)
     # Linux fallback (if find_package fails)

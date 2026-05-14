@@ -21,6 +21,7 @@ MergeFit::MergeFit()
     smooth_iter = -1;
 
     preserve_sharp = 1;
+    preserve_sharp_cli = -1;  // -1 = not set via CLI
     preserve_boundary = 1;
     minimum_cost = 1;
     adaptive_scale = 1;
@@ -66,6 +67,11 @@ void MergeFit::set_magnitude_factor(double mag)
 void MergeFit::set_angle_tol(double tol)
 {
     angle_tol = tol;
+}
+
+void MergeFit::set_preserve_sharp(int val)
+{
+    preserve_sharp_cli = val;
 }
 
 void MergeFit::set_fitting_tol(double tol)
@@ -134,6 +140,11 @@ void MergeFit::read_config_file(const std::string &fn)
                 fin >> magnitude_factor;
             else if (parameter_type == "angle_for_sharp:")
                 fin >> angle_tol;
+            else if (parameter_type == "preserve_sharp:")
+            {
+                fin >> temp;
+                preserve_sharp = (temp == "yes" || temp == "1") ? 1 : 0;
+            }
             else if (parameter_type == "fit_tolerance:")
                 fin >> fit_tol;
             else if (parameter_type == "perform_mirror:")
@@ -261,6 +272,9 @@ int MergeFit::write_CAD_to_step(const std::string &surf_pat, const std::string &
 int MergeFit::run(const std::string& cad_file_in, const std::string& cad_file_out, const std::string& config_file)
 {
     read_config_file(config_file);
+    // CLI flag overrides config file value if set
+    if (preserve_sharp_cli >= 0)
+        preserve_sharp = preserve_sharp_cli;
 
     // temporary files
     const std::string tri_obj = temp_dir + "tri.obj";
